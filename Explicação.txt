@@ -1,0 +1,26 @@
+Criacional - Abstract Factory
+
+Abstract Factory - Seria uma fábrica genérica, no nosso caso seria o IFatec, uma marca de comidas
+
+Concrete Factory - Seria estilos de comida, um grupo para a comida, sobremesa e bebida, no nosso caso, Japonesa e Italiana
+
+Abstract Product - Seria o tipo de comida, Prato Principal, Sobremesa e Bebida no nosso caso
+
+Concrete Product - Seria a comida em si, Lasanha, Yakisoba; Mochi, Tiramisu; Soda Italiana, Saquê
+
+Obs: Para criar outros pratos, bebidas ou sobremesas, o melhor caminho, seria utilizar um parametro, com o tipo de prato,
+seja sopa, massa entre outros e o nome do prato
+
+Comportamental - Memento
+
+Originator - Seria o objeto mãe, nesse caso, o PEDIDO, que armazenaria o Prato Principal, Sobremesa e Bebida do Cliente
+onde ele pode ter os métodos Salvar(um novo pedido com os prator) e Restaurar (objeto que já foi usado anteriormente)
+
+Memento - Seria uma caixa temporária, onde ele armazena os dados recebidos daquele momento, um objeto novo no caso
+e não pode ser alterado
+
+Caretaker - Aqui onde ele coloca objeto
+
+Program - Onde posso alterar esse objeto
+
+

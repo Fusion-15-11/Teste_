@@ -1,0 +1,88 @@
+﻿@page
+@using Microsoft.AspNetCore.Mvc
+@attribute [IgnoreAntiforgeryToken]
+@using IFatec.Factories
+@using IFatec
+
+@{
+    // Verifica se a requisição é um POST (clique no botão de fazer pedido)
+    bool pedidoRealizado = Request.Method == "POST";
+    
+    // Pega a escolha da URL para não perder a referência da fábrica
+    string escolhaAtual = Request.Query["escolha"].ToString();
+    
+    // Pega o ingrediente digitado, caso o pedido tenha sido realizado
+    string ingredienteForm = pedidoRealizado ? Request.Form["ingrediente"].ToString() : "";
+
+    IFatec.Cliente meuCliente = null;
+
+    if (escolhaAtual == "ita") {
+        meuCliente = new Cliente(new FactoryItaliana());
+    } 
+    else if (escolhaAtual == "jap") {
+        meuCliente = new Cliente(new FactoryJaponesa());
+    }
+
+    // Aplica a personalização SE o botão foi clicado
+    if (pedidoRealizado && meuCliente != null) {
+        meuCliente.PersonalizarPrato(ingredienteForm);
+    }
+}
+
+<style>
+    body { background: #121212; color: white; font-family: sans-serif; text-align: center; }
+    .menu { margin: 20px auto; padding: 20px; border: 1px solid #444; display: inline-block; text-align: left; max-width: 600px; }
+    .btn { padding: 10px 15px; margin: 5px; cursor: pointer; text-decoration: none; color: white; border: 1px solid white; display: inline-block; background: transparent; }
+    .btn-pedido { background-color: #4CAF50; border: none; font-weight: bold; border-radius: 4px; color: white; margin-top: 10px; }
+    .input-ingrediente { padding: 10px; width: 60%; margin-bottom: 15px; border-radius: 4px; border: 1px solid #ccc; }
+    .success-msg { background-color: #4CAF50; padding: 15px; border-radius: 5px; margin: 20px auto; font-weight: bold; text-align: center; max-width: 600px; }
+    h3 { color: #90caf9; margin-bottom: 0; }
+    p { margin-top: 5px; color: #ccc; line-height: 1.5; }
+</style>
+
+<h1>Cardápio FatecFood</h1>
+
+<a href="/Index?escolha=ita" class="btn">Ver Menu Italiano</a>
+<a href="/Index?escolha=jap" class="btn">Ver Menu Japonês</a>
+
+<hr />
+
+@if (pedidoRealizado && meuCliente != null)
+{
+    <div class="success-msg">
+        ✅ Pedido realizado com sucesso! A cozinha já está preparando.
+    </div>
+}
+
+@if (meuCliente != null)
+{
+    <div class="menu">
+        <h2>Resumo: @(escolhaAtual == "ita" ? "Pedido Italiano" : "Pedido Japonês")</h2>
+
+        <h3>PRATO PRINCIPAL:</h3>
+        <p>@meuCliente.BuscarDescricaoPratoPrincipal()</p>
+
+        <h3>SOBREMESA:</h3>
+        <p>@meuCliente.BuscarDescricaoSobremesa()</p>
+
+        <h3>BEBIDA:</h3>
+        <p>@meuCliente.BuscarDescricaoBebida()</p>
+
+        @if (!pedidoRealizado)
+        {
+            <hr style="border-color: #444; margin: 20px 0;" />
+            
+            <!-- Adicionei /Index no action para garantir que ele ache a rota certa -->
+            <form method="post" action="/Index?escolha=@escolhaAtual">
+                <label>Deseja retirar algum ingrediente do prato principal?</label><br />
+                <input type="text" name="ingrediente" class="input-ingrediente" placeholder="Ex: Cebola, Queijo..." />
+                <br />
+                <button type="submit" class="btn btn-pedido">Confirmar e Fazer Pedido</button>
+            </form>
+        }
+    </div>
+}
+else
+{
+    <p>Clique em um dos botões acima para iniciar seu pedido.</p>
+}
